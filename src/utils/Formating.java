@@ -81,4 +81,13 @@ public class Formating {
 
 		return concatenated;
 	}
+
+	public static byte[] xorSameLenByteArrays(byte[] first, byte[] second) {
+		byte[] xored = new byte[first.length];
+		for (int i = 0; i < first.length; i++) {
+			xored[i] = (byte) (first[i] ^ second[i]);
+		}
+
+		return xored;
+	}
 }
