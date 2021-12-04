@@ -10,7 +10,7 @@ public class PasswordSalter {
 
 	private final Random r = new Random();
 	private MessageDigest md;
-	private byte[] salt;
+	public byte[] salt;
 
 	public PasswordSalter() {
 

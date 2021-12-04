@@ -82,12 +82,26 @@ public class Formating {
 		return concatenated;
 	}
 
-	public static byte[] xorSameLenByteArrays(byte[] first, byte[] second) {
+	public static byte[] xorSameLenByteArrays(byte[] first, byte[] second, int offset) {
 		byte[] xored = new byte[first.length];
 		for (int i = 0; i < first.length; i++) {
-			xored[i] = (byte) (first[i] ^ second[i]);
+			xored[i] = (byte) (first[i + offset] ^ second[i]);
 		}
 
 		return xored;
+	}
+
+	public static int xorSumSameLenByteArrays(byte[] first, byte[] second, int offset) {
+		int ans = 0;
+
+		for (int i = 0; i < first.length; i++) {
+			ans += (byte) (first[i + offset] ^ second[i]);
+		}
+
+		return ans;
+	}
+
+	public static byte[] intToByteArray(int i) {
+		return ByteBuffer.allocate(4).putInt(i).array();
 	}
 }

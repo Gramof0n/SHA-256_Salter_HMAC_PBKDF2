@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import utils.Formating;
 
@@ -69,6 +70,13 @@ public class PBKDF2 {
 		System.out.println("Out as string: " + Formating.byte2HexStr(out));
 		return out;
 
+	}
+
+	public byte[] geenrateRandomSalt() {
+		Random r = new Random();
+		byte[] salt = new byte[HLEN];
+		r.nextBytes(salt);
+		return salt;
 	}
 
 }

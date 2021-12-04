@@ -17,15 +17,20 @@ public class Main {
 		System.out.println("===============HMAC==============");
 
 		HMAC hmac = new HMAC();
-		String text = "what do ya want for nothing?";
+		String text = "test";
 
-		hmac.generateKeyFromString("Drugi kljuc");
+		hmac.generateKeyFromString("testing");
 
 		System.out.println("Key:");
 		System.out.println(hmac.getKeyAsHex());
 		System.out.println("HMAC:");
 		System.out.println(Formating.byte2HexStr(hmac.generateHMAC(text.getBytes())));
+		System.out.println("----------PBKDF2----------------");
+		PBKDF2 pbkdf = new PBKDF2();
 
+		byte[] derivedKey = pbkdf.deriveKey(text.getBytes(), "test".getBytes(), 10, 301);
+		System.out.println("Derived key: " + Formating.byte2HexStr(derivedKey));
+		;
 	}
 
 }
