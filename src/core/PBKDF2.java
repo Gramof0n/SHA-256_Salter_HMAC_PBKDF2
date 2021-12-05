@@ -72,7 +72,7 @@ public class PBKDF2 {
 
 	}
 
-	public byte[] geenrateRandomSalt() {
+	public byte[] genrateRandomSalt() {
 		Random r = new Random();
 		byte[] salt = new byte[HLEN];
 		r.nextBytes(salt);

@@ -25,7 +25,7 @@ public class PasswordSalter {
 		salt = saltString.getBytes();
 	}
 
-	public byte[] salt(String pass) throws NoSuchAlgorithmException {
+	public byte[] saltPassword(String pass) throws NoSuchAlgorithmException {
 		if (salt == null) {
 			System.err.println("No salt generated");
 			return null;

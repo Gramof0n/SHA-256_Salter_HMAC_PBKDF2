@@ -10,7 +10,7 @@ public class Main {
 
 		PasswordSalter salter = new PasswordSalter();
 		salter.generateRandomSalt();
-		System.out.println(Formating.byte2HexStr(salter.salt("test")));
+		System.out.println(Formating.byte2HexStr(salter.saltPassword("test")));
 		System.out.println(salter.saltAsHex());
 
 		System.out.println();
@@ -28,7 +28,7 @@ public class Main {
 		System.out.println("----------PBKDF2----------------");
 		PBKDF2 pbkdf = new PBKDF2();
 
-		byte[] derivedKey = pbkdf.deriveKey(text.getBytes(), "test".getBytes(), 10, 301);
+		byte[] derivedKey = pbkdf.deriveKey(text.getBytes(), "test".getBytes(), 10, 5);
 		System.out.println("Derived key: " + Formating.byte2HexStr(derivedKey));
 		;
 	}

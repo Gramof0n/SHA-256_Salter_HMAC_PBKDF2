@@ -2,7 +2,6 @@ package gui;
 
 import java.awt.CardLayout;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -12,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -59,6 +60,9 @@ public class gui {
 	private File selectedFile;
 	private byte[] fileBytes;
 
+	private CardLayout button_card_layout = new CardLayout(0, 0);
+	private JTextArea txtaOutput = new JTextArea();
+
 	/**
 	 * Launch the application.
 	 */
@@ -89,9 +93,11 @@ public class gui {
 		frmSaltHmacPbkdf = new JFrame();
 		frmSaltHmacPbkdf.setTitle("Salt HMAC PBKDF2");
 		frmSaltHmacPbkdf.setResizable(false);
-		frmSaltHmacPbkdf.setBounds(100, 100, 857, 514);
+		frmSaltHmacPbkdf.setBounds(100, 100, 857, 526);
 		frmSaltHmacPbkdf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSaltHmacPbkdf.getContentPane().setLayout(null);
+
+		JPanel card_panel_buttons = new JPanel();
 
 		JPanel side_menu = new JPanel();
 		side_menu.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -100,14 +106,13 @@ public class gui {
 		side_menu.setLayout(new GridLayout(4, 2, 0, 0));
 
 		JPanel panel_title = new JPanel();
-		FlowLayout fl_panel_title = (FlowLayout) panel_title.getLayout();
-		fl_panel_title.setAlignment(FlowLayout.LEFT);
-		fl_panel_title.setHgap(0);
-		fl_panel_title.setVgap(0);
 		side_menu.add(panel_title);
+		panel_title.setLayout(null);
 
 		JLabel lblNewLabel = new JLabel("Select operation");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setBounds(26, 28, 148, 56);
+		lblNewLabel.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 18));
 		lblNewLabel.setVerticalAlignment(SwingConstants.BOTTOM);
 		panel_title.add(lblNewLabel);
 
@@ -146,19 +151,22 @@ public class gui {
 
 		JPanel panel_output = new JPanel();
 		panel_output.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		panel_output.setBounds(226, 242, 607, 225);
+		panel_output.setBounds(226, 252, 607, 166);
 		frmSaltHmacPbkdf.getContentPane().add(panel_output);
 		panel_output.setLayout(null);
 
-		JTextArea txtaOutput = new JTextArea();
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 10, 587, 146);
+		panel_output.add(scrollPane);
+
+		scrollPane.setViewportView(txtaOutput);
+		txtaOutput.setLineWrap(true);
 		txtaOutput.setEditable(false);
-		txtaOutput.setBounds(10, 10, 587, 205);
-		panel_output.add(txtaOutput);
 
 		JPanel card_panel = new JPanel();
 		CardLayout cardLayout = new CardLayout(0, 0);
 		card_panel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		card_panel.setBounds(227, 10, 606, 222);
+		card_panel.setBounds(227, 10, 606, 232);
 		frmSaltHmacPbkdf.getContentPane().add(card_panel);
 		card_panel.setLayout(cardLayout);
 
@@ -232,6 +240,7 @@ public class gui {
 		btnHashText.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				hmac_cardLayout.show(p_hmac, "p_hash_text");
+				button_card_layout.show(card_panel_buttons, "btn_hmac_text");
 			}
 		});
 		btnHashText.setBounds(315, 181, 123, 21);
@@ -292,6 +301,7 @@ public class gui {
 		btnSwithToFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				hmac_cardLayout.show(p_hmac, "p_hash_file");
+				button_card_layout.show(card_panel_buttons, "btn_hmac");
 			}
 		});
 		btnSwithToFile.setBounds(295, 160, 113, 21);
@@ -410,6 +420,27 @@ public class gui {
 		spnPbkdfIterations.setBounds(409, 100, 63, 20);
 		p_pbkdf2.add(spnPbkdfIterations);
 
+		card_panel_buttons.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		card_panel_buttons.setBounds(226, 420, 607, 47);
+		frmSaltHmacPbkdf.getContentPane().add(card_panel_buttons);
+
+		JButton btnSaveOutputHmac = new JButton("Save generated HMAC (file)");
+		btnSaveOutputHmac.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		card_panel_buttons.setLayout(button_card_layout);
+		card_panel_buttons.add(btnSaveOutputHmac, "btn_hmac");
+
+		JButton btnSaveOutputSalt = new JButton("Save salted password");
+		card_panel_buttons.add(btnSaveOutputSalt, "btn_salt");
+
+		JButton btnSaveOutputPbkdf = new JButton("Save derived key");
+		card_panel_buttons.add(btnSaveOutputPbkdf, "btn_pbkdf");
+
+		JButton btnSaveOutputHmacText = new JButton("Save generated HMAC (text)");
+		card_panel_buttons.add(btnSaveOutputHmacText, "btn_hmac_text");
+
 		// RADIO BUTTON GROUP
 		ButtonGroup g = new ButtonGroup();
 
@@ -427,7 +458,7 @@ public class gui {
 
 		radioButtons.get(1).setSelected(true);
 
-		switchPanels(cardLayout, g, card_panel);
+		switchPanels(cardLayout, g, card_panel, card_panel_buttons);
 
 		generateKey(btnSaltGenerate, txtSaltSalt, "salter");
 		generateKey(btnHmacGenerateKey, txtHmacKey, "hmac");
@@ -444,9 +475,23 @@ public class gui {
 		loadKeyFromFile(btnHmacTextLoadFromFile, txtHmacTextKey);
 		loadKeyFromFile(btnPbkdfLoadFromFile, txtPbkdfSalt);
 
+		openFilePicker(btnUpload, textField);
+
+		generateSalt(txtaOutput, btnSaltPassword, txtSaltPass, txtSaltSalt);
+		saveOutputToFile(btnSaveOutputSalt, txtaOutput);
+
+		generateHmacFromFile(txtaOutput, btnGenerateHmac, txtHmacKey);
+		saveOutputToFile(btnSaveOutputHmac, txtaOutput);
+
+		generateHmacFromText(txtaOutput, btnHmacTextGenerate, txtHmacText, txtHmacTextKey);
+		saveOutputToFile(btnSaveOutputHmacText, txtaOutput);
+
+		derivePbkdfKey(txtaOutput, btnPbkdfDeriveKey, txtPbkdfPassword, txtPbkdfSalt, spnPbkdfIterations,
+				spnPbkdfDKlen);
+		saveOutputToFile(btnSaveOutputPbkdf, txtaOutput);
 	}
 
-	private void switchPanels(CardLayout cl, ButtonGroup g, JPanel card_panel) {
+	private void switchPanels(CardLayout cl, ButtonGroup g, JPanel card_panel, JPanel card_panel_buttons) {
 		for (JRadioButton b : radioButtons) {
 			b.addActionListener(new ActionListener() {
 
@@ -454,11 +499,34 @@ public class gui {
 				public void actionPerformed(ActionEvent e) {
 					String card = g.getSelection().getActionCommand();
 
+					txtaOutput.setText("");
 					cl.show(card_panel, card);
+					switchButtons(card, card_panel_buttons);
 
 				}
 
 			});
+		}
+	}
+
+	private void switchButtons(String currentCard, JPanel btn_card_panel) {
+		switch (currentCard) {
+		case "p_salt":
+			button_card_layout.show(btn_card_panel, "btn_salt");
+			break;
+		case "p_hmac":
+			button_card_layout.show(btn_card_panel, "btn_hmac");
+			break;
+		case "p_pbkdf2":
+			button_card_layout.show(btn_card_panel, "btn_pbkdf");
+			break;
+		case "text":
+			button_card_layout.show(btn_card_panel, "btn_hmac_text");
+			break;
+		case "file":
+			button_card_layout.show(btn_card_panel, "btn_hmac");
+			break;
+
 		}
 	}
 
@@ -487,11 +555,158 @@ public class gui {
 					key.setText(Formating.byte2HexStr(hmac.key));
 					break;
 				case "pbkdf":
-					key.setText(Formating.byte2HexStr(pbkdf.geenrateRandomSalt()));
+					key.setText(Formating.byte2HexStr(pbkdf.genrateRandomSalt()));
 					break;
 
 				}
 				// key.setText(Formating.byte2HexStr(keyBytes));
+
+			}
+
+		});
+	}
+
+	private void generateSalt(JTextArea txtaOutput, JButton btnGenerateOutput, JTextField salterPassword,
+			JTextField salterSalt) {
+
+		btnGenerateOutput.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				txtaOutput.setText(null);
+
+				try {
+					if (salterSalt.getText().length() < 1) {
+						JOptionPane.showMessageDialog(frmSaltHmacPbkdf, "No salt entered", "Error",
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					salter.generateSaltFromString(salterSalt.getText());
+					byte[] saltedPass = salter.saltPassword(salterPassword.getText());
+
+					if (salterPassword.getText().length() == 0) {
+						JOptionPane.showMessageDialog(frmSaltHmacPbkdf, "No password to salt", "Error",
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					txtaOutput.append("Salted password: ");
+					txtaOutput.append(Formating.byte2HexStr(saltedPass));
+				} catch (NoSuchAlgorithmException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+			}
+
+		});
+	}
+
+	private void generateHmacFromFile(JTextArea txtaOutput, JButton btnGenerateOutput, JTextField hmacKey) {
+
+		btnGenerateOutput.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				txtaOutput.setText(null);
+
+				if (fileBytes == null) {
+					JOptionPane.showMessageDialog(frmSaltHmacPbkdf, "No file uploaded", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				if (hmacKey.getText().length() < 1) {
+					JOptionPane.showMessageDialog(frmSaltHmacPbkdf, "No key entered", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				hmac.generateKeyFromString(hmacKey.getText());
+
+				byte[] generatedHmac = hmac.generateHMAC(fileBytes);
+
+				txtaOutput.append("HMAC: ");
+				txtaOutput.append(Formating.byte2HexStr(generatedHmac));
+
+			}
+
+		});
+	}
+
+	private void generateHmacFromText(JTextArea txtaOutput, JButton btnGenerateOutput, JTextField hmacPass,
+			JTextField hmacKey) {
+		btnGenerateOutput.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				txtaOutput.setText(null);
+
+				if (hmacPass.getText().length() < 1) {
+					JOptionPane.showMessageDialog(frmSaltHmacPbkdf, "No input detected", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				if (hmacKey.getText().length() < 1) {
+					JOptionPane.showMessageDialog(frmSaltHmacPbkdf, "No key entered", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				hmac.generateKeyFromString(hmacKey.getText());
+
+				byte[] generatedHmac = hmac.generateHMAC(hmacPass.getText().getBytes());
+
+				txtaOutput.append("HMAC: ");
+				txtaOutput.append(Formating.byte2HexStr(generatedHmac));
+
+			}
+
+		});
+	}
+
+	private void derivePbkdfKey(JTextArea txtaOutput, JButton btnGenerateOutput, JTextField pbkdfPass,
+			JTextField pbkdfSalt, JSpinner iterationCount, JSpinner desiredKeyLength) {
+		btnGenerateOutput.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				txtaOutput.setText(null);
+
+				int iterations = (Integer) iterationCount.getValue();
+				int dkLen = (Integer) desiredKeyLength.getValue();
+				if (pbkdfPass.getText().length() < 1) {
+					JOptionPane.showMessageDialog(frmSaltHmacPbkdf, "No input detected", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				if (pbkdfSalt.getText().length() < 1) {
+					JOptionPane.showMessageDialog(frmSaltHmacPbkdf, "No salt entered", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				if (iterations < 1) {
+					JOptionPane.showMessageDialog(frmSaltHmacPbkdf, "Iteration count must be > 0", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				if (dkLen < 1) {
+					JOptionPane.showMessageDialog(frmSaltHmacPbkdf, "Desired key length must be > 0", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				byte[] derivedKey = pbkdf.deriveKey(pbkdfSalt.getText().getBytes(), pbkdfSalt.getText().getBytes(),
+						iterations, dkLen);
+
+				txtaOutput.append("Derived key as hex: ");
+				txtaOutput.append(Formating.byte2HexStr(derivedKey));
+				txtaOutput.append("\n");
+				txtaOutput.append("\nDerived key as UTF-8 string: ");
+				txtaOutput.append(new String(derivedKey));
 
 			}
 
@@ -509,6 +724,37 @@ public class gui {
 
 				if (!validateKey(txtKey))
 					return;
+
+				jfc.showSaveDialog(null);
+
+				try {
+					PrintWriter writer = new PrintWriter(jfc.getSelectedFile().toString() + ".txt");
+					writer.println(key);
+					writer.close();
+				} catch (FileNotFoundException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+
+			}
+
+		});
+	}
+
+	private void saveOutputToFile(JButton btn, JTextArea txtOutput) {
+		btn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String key = txtOutput.getText();
+
+				if (key.length() < 1) {
+					JOptionPane.showMessageDialog(frmSaltHmacPbkdf, "No output detected", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 
 				jfc.showSaveDialog(null);
 
